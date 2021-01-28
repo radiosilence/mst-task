@@ -1,6 +1,6 @@
 {
   "name": "mst-request",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Request wrapper for mobx-state-tree",
   "main": "dist/index.js",
   "repository": "git@github.com:radiosilence/mst-request.git",

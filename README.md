@@ -6,14 +6,12 @@ A simple library for wrapping requests, using MobX-state-tree
 
 ```ts
 import { flow, types } from "mobx-state-tree";
-import Request, { isCancelled, isError, unwrap, Request } from "mst-request";
+import { Request, isCancelled, isError, unwrap, Request } from "mst-request";
 import { PotatoAPI } from "./apis/potato";
 
-export const PotatoRequest = Request.named("PotatoRequest")
-  .props({ params: types.model({ page: types.number }) })
-  .actions(self => ({
-    execute: self.request((id: string) => PotatoAPI.getPotato(id, self.params)),
-  }));
+export const PotatoRequest = createRequest((id: string) =>
+  PotatoAPI.getPotato(id),
+);
 
 export const Potato = types.model({
   id: types.identifier,
@@ -27,16 +25,22 @@ export const PotatoStore = types
   })
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
-      const response = yield* self.request.execute(id);
+      const result = yield* self.request.execute(id);
       // Unsafe, but skips typecheck
-      const { id, name } = unwrapUnsafe(response);
+      const { id, name } = unwrapUnsafe(result);
 
       // Handling nicely
-      if (isCancelled(response)) return; // make sure it is latest request (debouncing)
-      if (isError(response)) return; // handle error
-      self.potato = unwrap(response); // we know it is success
+      // switch (true) {
+      //   case isCancelled(result): break;
+      //   case isError(result): break;
+      //   default:
+      //     self.potato = unwrap(result);
+      // }
+      if (isCancelled(result)) return; // make sure it is latest request (debouncing)
+      if (isError(result)) return; // handle error
+      self.potato = unwrap(result); // we know it is success
 
-      console.log(response);
+      console.log(result);
       console.log(self.request.failed);
     });
 

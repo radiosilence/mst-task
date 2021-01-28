@@ -1,24 +1,21 @@
-export enum ResponseStatus {
+export enum ResultStatus {
   Error,
   Cancelled,
   Success,
 }
 
-export interface SuccessResponse<R> {
-  status: ResponseStatus.Success;
+export interface SuccessResult<R> {
+  status: ResultStatus.Success;
   value: R;
 }
 
-export interface ErrorResponse {
-  status: ResponseStatus.Error;
+export interface ErrorResult {
+  status: ResultStatus.Error;
   error: string;
 }
 
-export interface CancelledResponse {
-  status: ResponseStatus.Cancelled;
+export interface CancelledResult {
+  status: ResultStatus.Cancelled;
 }
 
-export type Response<T> =
-  | SuccessResponse<T>
-  | ErrorResponse
-  | CancelledResponse;
+export type Result<T> = SuccessResult<T> | ErrorResult | CancelledResult;

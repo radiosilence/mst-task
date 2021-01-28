@@ -1,5 +1,11 @@
-import { flow, toGenerator, toGeneratorFunction, types } from "mobx-state-tree";
-import { Response, ResponseStatus } from "./types";
+import {
+  flow,
+  Instance,
+  toGenerator,
+  toGeneratorFunction,
+  types,
+} from "mobx-state-tree";
+import { Result, ResultStatus } from "./types";
 
 const { model, optional, enumeration, string, maybe } = types;
 
@@ -9,7 +15,7 @@ export function randomHex(): string {
 
 export const RequestState = enumeration(["ready", "loading", "done", "failed"]);
 
-export default model({
+export const Request = model({
   state: optional(RequestState, "ready"),
   error: maybe(string),
   id: optional(string, randomHex()),
@@ -38,7 +44,7 @@ export default model({
     function request<R, Args extends unknown[]>(
       cb: (...args: Args) => Promise<R>,
     ) {
-      return toGeneratorFunction<Response<R>, Args>(
+      return toGeneratorFunction<Result<R>, Args>(
         flow(function* (...args: Args) {
           try {
             reset();
@@ -46,14 +52,14 @@ export default model({
             self.state = "loading";
             const value = yield* toGenerator(cb(...args));
             if (self.id !== id) {
-              return { status: ResponseStatus.Cancelled };
+              return { status: ResultStatus.Cancelled };
             }
             self.state = "done";
-            return { status: ResponseStatus.Success, value };
+            return { status: ResultStatus.Success, value };
           } catch (error) {
             self.error = `${error}`;
             self.state = "failed";
-            return { status: ResponseStatus.Error, error };
+            return { status: ResultStatus.Error, error };
           }
         }),
       );
@@ -64,3 +70,5 @@ export default model({
       reset,
     };
   });
+
+export type Request = Instance<typeof Request>;

@@ -1,8 +1,8 @@
 pre-commit:
   parallel: true
   commands:
-    pretty-quick:
-      run: pretty-quick {staged_files} && git add {staged_files}
+    prettier:
+      run: prettier --write {staged_files} && git add {staged_files}
 
 pre-push:
   parallel: true

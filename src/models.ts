@@ -52,12 +52,12 @@ export default model({
             reset();
             const id = self.id;
             self.state = "loading";
-            const data = yield* toGenerator(cb(...args));
+            const value = yield* toGenerator(cb(...args));
             if (self.id !== id) {
               return { status: ResponseStatus.Cancelled };
             }
             self.state = "done";
-            return { status: ResponseStatus.Success, data };
+            return { status: ResponseStatus.Success, value };
           } catch (error) {
             self.error = `${error}`;
             self.state = "failed";

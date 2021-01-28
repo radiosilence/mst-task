@@ -6,7 +6,7 @@ export enum ResponseStatus {
 
 export interface SuccessResponse<R> {
   status: ResponseStatus.Success;
-  data: R;
+  value: R;
 }
 
 export interface ErrorResponse {

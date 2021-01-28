@@ -25,13 +25,6 @@ export const PotatoStore = types
       // Unsafe, but skips typecheck
       const { id, name } = unwrapUnsafe(result);
 
-      // Handling nicely
-      // switch (true) {
-      //   case isCancelled(result): break;
-      //   case isError(result): break;
-      //   default:
-      //     self.potato = unwrap(result);
-      // }
       if (isCancelled(result)) return; // make sure it is latest request (debouncing)
       if (isError(result)) return; // handle error
       self.potato = unwrap(result); // we know it is success

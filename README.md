@@ -20,7 +20,7 @@ export const Potato = types.model({
 
 export const PotatoStore = types
   .model("PotatoStore", {
-    request: types.optional(PotatoRequest, { params: { page: 1 } }),
+    request: PotatoRequest,
     potato: types.maybe(Potato),
   })
   .actions(self => {

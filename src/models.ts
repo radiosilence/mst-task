@@ -1,10 +1,4 @@
-import {
-  flow,
-  Instance,
-  toGenerator,
-  toGeneratorFunction,
-  types,
-} from "mobx-state-tree";
+import { flow, Instance, toGenerator, types } from "mobx-state-tree";
 import { Result, ResultStatus } from "./types";
 
 const { model, optional, enumeration, string, maybe } = types;
@@ -43,26 +37,24 @@ export const Request = model({
 
     function request<R, Args extends unknown[]>(
       cb: (...args: Args) => Promise<R>,
-    ) {
-      return toGeneratorFunction<Result<R>, Args>(
-        flow(function* (...args: Args) {
-          try {
-            reset();
-            const id = self.id;
-            self.state = "loading";
-            const value = yield* toGenerator(cb(...args));
-            if (self.id !== id) {
-              return { status: ResultStatus.Cancelled };
-            }
-            self.state = "done";
-            return { status: ResultStatus.Success, value };
-          } catch (error) {
-            self.error = `${error}`;
-            self.state = "failed";
-            return { status: ResultStatus.Error, error };
+    ): (...args: Args) => Promise<Result<R>> {
+      return flow(function* (...args: Args) {
+        try {
+          reset();
+          const id = self.id;
+          self.state = "loading";
+          const value = yield* toGenerator(cb(...args));
+          if (self.id !== id) {
+            return { status: ResultStatus.Cancelled };
           }
-        }),
-      );
+          self.state = "done";
+          return { status: ResultStatus.Success, value };
+        } catch (error) {
+          self.error = `${error}`;
+          self.state = "failed";
+          return { status: ResultStatus.Error, error };
+        }
+      });
     }
 
     return {

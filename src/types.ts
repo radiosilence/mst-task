@@ -19,3 +19,5 @@ export interface CancelledResult {
 }
 
 export type Result<T> = SuccessResult<T> | ErrorResult | CancelledResult;
+
+export type FlowReturn<R> = R extends Promise<infer T> ? T : R;

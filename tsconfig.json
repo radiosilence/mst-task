@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "outDir": "dist",
+    "noEmit": false,
+    "incremental": false,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "isolatedModules": true,
+    "target": "es2019",
+    "rootDir": "src"
+  },
+  "exclude": ["node_modules"],
+  "include": ["src", "index.ts"]
+}

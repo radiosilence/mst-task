@@ -4,7 +4,8 @@ export enum ResultStatus {
   Ok,
 }
 
-// export class Result {
+// TODO: Make this useful
+// export class BaseResult {
 //   status?: ResultStatus;
 
 //   unwrap() {

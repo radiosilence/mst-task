@@ -1,5 +1,5 @@
 import { flow, Instance, toGenerator, types } from "mobx-state-tree";
-import { Cancel, Err, FlowReturn, Ok } from "./types";
+import { Cancel, Err, Ok, Result } from "./types";
 
 const { model, optional, enumeration, string, maybe } = types;
 
@@ -37,7 +37,7 @@ export const Request = model({
 
     function request<R, Args extends unknown[]>(
       cb: (...args: Args) => Promise<R>,
-    ): (...args: Args) => Promise<FlowReturn<Ok<R>> | Err | Cancel> {
+    ): (...args: Args) => Promise<Result<R>> {
       return flow(function* (...args: Args) {
         try {
           reset();

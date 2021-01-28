@@ -9,10 +9,6 @@ import { flow, types } from "mobx-state-tree";
 import { Request, isCancelled, isError, unwrap, Request } from "mst-request";
 import { PotatoAPI } from "./apis/potato";
 
-export const PotatoRequest = createRequest((id: string) =>
-  PotatoAPI.getPotato(id),
-);
-
 export const Potato = types.model({
   id: types.identifier,
   name: types.string,
@@ -20,7 +16,7 @@ export const Potato = types.model({
 
 export const PotatoStore = types
   .model("PotatoStore", {
-    request: PotatoRequest,
+    request: createRequest((id: string) => PotatoAPI.getPotato(id)),
     potato: types.maybe(Potato),
   })
   .actions(self => {

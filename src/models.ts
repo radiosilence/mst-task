@@ -14,7 +14,7 @@ export function randomHex(): string {
 
 export const RequestState = enumeration(["ready", "loading", "done", "failed"]);
 
-export const Request = model({
+export default model({
   state: optional(RequestState, "ready"),
   error: maybe(string),
   id: optional(string, randomHex()),

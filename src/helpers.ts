@@ -33,6 +33,6 @@ export function expect<T>(response: Response<T>, error: string) {
   return response.value;
 }
 
-export function unwrap<T>(response: SuccessResponse<T>) {
-  return response.value;
+export function unwrap<T>({ value }: SuccessResponse<T>) {
+  return value;
 }

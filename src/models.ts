@@ -1,10 +1,5 @@
 import { flow, toGenerator, toGeneratorFunction, types } from "mobx-state-tree";
-import {
-  CancelledResponse,
-  ErrorResponse,
-  ResponseStatus,
-  SuccessResponse,
-} from "./types";
+import { Response, ResponseStatus } from "./types";
 
 const { model, optional, enumeration, string, maybe } = types;
 
@@ -43,10 +38,7 @@ export default model({
     function request<R, Args extends unknown[]>(
       cb: (...args: Args) => Promise<R>,
     ) {
-      return toGeneratorFunction<
-        SuccessResponse<R> | ErrorResponse | CancelledResponse,
-        Args
-      >(
+      return toGeneratorFunction<Response<R>, Args>(
         flow(function* (...args: Args) {
           try {
             reset();

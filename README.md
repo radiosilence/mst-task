@@ -27,12 +27,9 @@ export const PotatoStore = types
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
       const result = yield* self.request.execute(id);
-      // Unsafe, but skips typecheck
-      const { id, name } = unwrapUnsafe(result);
-
       if (isCancelled(result)) return; // make sure it is latest request (debouncing)
       if (isError(result)) return; // handle error
-      self.potato = unwrap(result); // we know it is success
+      self.potato = result.unwrap(); // we know it is success
 
       console.log(result);
       console.log(self.request.failed);

@@ -6,8 +6,12 @@ A simple library for wrapping requests, using MobX-state-tree
 
 ```ts
 import { flow, types } from "mobx-state-tree";
-import { Request, isCancelled, isError, unwrap, Request } from "mst-request";
-import { PotatoAPI } from "./apis/potato";
+import { isCancelled, isError, unwrap, Request } from "mst-request";
+
+// This would be your API request
+export async function getPotato(id: string) {
+  return Promise.resolve({ id, name: "Jeremy" });
+}
 
 export const Potato = types.model({
   id: types.identifier,
@@ -16,7 +20,8 @@ export const Potato = types.model({
 
 export const PotatoStore = types
   .model("PotatoStore", {
-    request: createRequest((id: string) => PotatoAPI.getPotato(id)),
+    request: createRequest(getPotato),
+    ///
     potato: types.maybe(Potato),
   })
   .actions(self => {
@@ -46,7 +51,7 @@ export const PotatoDisplay = observer<{ id: string }>(({ id }) => {
   const { potatoStore } = useStores();
   const {
     potato,
-    req: { loading, error },
+    request: { loading, error },
   } = potatoStore;
 
   useEffect(() => {

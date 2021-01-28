@@ -1,24 +1,14 @@
-import {
-  CancelledResult,
-  ErrorResult,
-  Result,
-  ResultStatus,
-  SuccessResult,
-} from "./types";
+import { Cancel, Error, Ok, Result, ResultStatus } from "./types";
 
-export function isError<T>(response: Result<T>): response is ErrorResult {
+export function isError<T>(response: Result<T>): response is Error {
   return response.status === ResultStatus.Error;
 }
 
-export function isCancelled<T>(
-  response: Result<T>,
-): response is CancelledResult {
+export function isCancelled<T>(response: Result<T>): response is Cancel {
   return response.status === ResultStatus.Cancelled;
 }
 
-export function isSuccess<T>(
-  response: Result<T>,
-): response is SuccessResult<T> {
+export function isSuccess<T>(response: Result<T>): response is Ok<T> {
   return response.status === ResultStatus.Success;
 }
 
@@ -33,6 +23,6 @@ export function expect<T>(response: Result<T>, error: string) {
   return response.value;
 }
 
-export function unwrap<T>({ value }: SuccessResult<T>) {
+export function unwrap<T>({ value }: Ok<T>) {
   return value;
 }

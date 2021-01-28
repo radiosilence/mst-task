@@ -4,20 +4,20 @@ export enum ResultStatus {
   Success,
 }
 
-export interface SuccessResult<R> {
+export interface Ok<R> {
   status: ResultStatus.Success;
   value: R;
 }
 
-export interface ErrorResult {
+export interface Error {
   status: ResultStatus.Error;
   error: string;
 }
 
-export interface CancelledResult {
+export interface Cancel {
   status: ResultStatus.Cancelled;
 }
 
-export type Result<T> = SuccessResult<T> | ErrorResult | CancelledResult;
+export type Result<T> = Ok<T> | Error | Cancel;
 
 export type FlowReturn<R> = R extends Promise<infer T> ? T : R;

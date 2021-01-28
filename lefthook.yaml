@@ -1,0 +1,18 @@
+pre-commit:
+  parallel: true
+  commands:
+    pretty-quick:
+      run: pretty-quick {staged_files} && git add {staged_files}
+
+pre-push:
+  parallel: true
+  commands:
+    typecheck:
+      run: tsc --noEmit
+
+fixer:
+  parallel: true
+  commands:
+    fix:
+      glob: "*.{tsx,ts}"
+      run: eslint --fix {all_files}

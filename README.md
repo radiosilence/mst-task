@@ -22,26 +22,52 @@ export const Potato = types.model({
 
 export const PotatoStore = types
   .model("PotatoStore", {
-    potatoRequest: types.optional(PotatoRequest, { params: { page: 1 } }),
-    data: types.maybe(Potato),
+    request: types.optional(PotatoRequest, { params: { page: 1 } }),
+    potato: types.maybe(Potato),
   })
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
-      const response = yield* self.potatoRequest.execute(id);
+      const response = yield* self.request.execute(id);
       // Unsafe, but skips typecheck
       const { id, name } = unwrapUnsafe(response);
 
       // Handling nicely
       if (isCancelled(response)) return; // make sure it is latest request (debouncing)
       if (isError(response)) return; // handle error
-      self.data = unwrap(response); // we know it is success
+      self.potato = unwrap(response); // we know it is success
 
       console.log(response);
-      console.log(self.potatoRequest.failed);
+      console.log(self.request.failed);
     });
 
     return {
       fetchPotatoById,
     };
   });
+```
+
+Component
+
+```tsx
+export const PotatoDisplay = observer(() => {
+  const { potatoStore } = useStores();
+  const {
+    potato,
+    req: { loading, error },
+  } = potatoStore;
+
+  if (loading) {
+    return <Spinner />;
+  }
+
+  if (error) {
+    return <span className="error">Error loading potato: {error}</span>;
+  }
+
+  return (
+    <span>
+      Potato #{potato.id}: {potato.name}
+    </span>
+  );
+});
 ```

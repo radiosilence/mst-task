@@ -1,7 +1,7 @@
 export enum ResultStatus {
-  Error,
-  Cancelled,
-  Success,
+  Err,
+  Cancel,
+  Ok,
 }
 
 // export class Result {
@@ -16,7 +16,7 @@ export enum ResultStatus {
 // }
 
 export class Ok<R> {
-  status = ResultStatus.Success;
+  status: ResultStatus.Ok = ResultStatus.Ok;
   value: R;
 
   constructor(value: R) {
@@ -29,7 +29,7 @@ export class Ok<R> {
 }
 
 export class Err<T = Error | string> {
-  status = ResultStatus.Error;
+  status: ResultStatus.Err = ResultStatus.Err;
   error: T;
 
   constructor(err: T) {
@@ -38,7 +38,7 @@ export class Err<T = Error | string> {
 }
 
 export class Cancel {
-  status = ResultStatus.Cancelled;
+  status: ResultStatus.Cancel = ResultStatus.Cancel;
 }
 
 // export interface Ok<R> {

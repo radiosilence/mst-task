@@ -1,5 +1,5 @@
 import { flow, Instance, toGenerator, types } from "mobx-state-tree";
-import { Result, ResultStatus } from "./types";
+import { Cancel, Err, Ok, Result } from "./types";
 
 const { model, optional, enumeration, string, maybe } = types;
 
@@ -45,14 +45,14 @@ export const Request = model({
           self.state = "loading";
           const value = yield* toGenerator(cb(...args));
           if (self.id !== id) {
-            return { status: ResultStatus.Cancelled };
+            return new Cancel();
           }
           self.state = "done";
-          return { status: ResultStatus.Success, value };
+          return new Ok(value);
         } catch (error) {
           self.error = `${error}`;
           self.state = "failed";
-          return { status: ResultStatus.Error, error };
+          return new Err(error);
         }
       });
     }

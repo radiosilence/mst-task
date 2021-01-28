@@ -49,12 +49,16 @@ export const PotatoStore = types
 Component
 
 ```tsx
-export const PotatoDisplay = observer(() => {
+export const PotatoDisplay = observer<{ id: string }>(({ id }) => {
   const { potatoStore } = useStores();
   const {
     potato,
     req: { loading, error },
   } = potatoStore;
+
+  useEffect(() => {
+    potatoStore.fetchPotatoById(id);
+  }, [id]);
 
   if (loading) {
     return <Spinner />;

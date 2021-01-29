@@ -28,7 +28,7 @@ export const PotatoStore = types
     const fetchPotatoById = flow(function* (id: string) {
       const result = yield* self.request.execute(id);
       if (isCancelled(result)) return; // make sure it is latest request (debouncing)
-      if (isError(result)) return; // handle error
+      if (isError(result)) throw new Error(result.error); // handle error
       self.potato = result.unwrap(); // we know it is success
 
       console.log(result);

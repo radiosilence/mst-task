@@ -36,7 +36,7 @@ export const PotatoStore = types
     });
 
     return {
-      fetchPotatoById,
+      fetchPotatoByI$d,
     };
   });
 ```
@@ -48,19 +48,19 @@ export const PotatoDisplay = observer<{ id: string }>(({ id }) => {
   const { potatoStore } = useStores();
   const {
     potato,
-    request: { loading, error },
+    request: { inProgress, error },
   } = potatoStore;
 
   useEffect(() => {
     potatoStore.fetchPotatoById(id);
   }, [id]);
 
-  if (loading) {
+  if (inProgress) {
     return <Spinner />;
   }
 
   if (error) {
-    return <span className="error">Error loading potato: {error}</span>;
+    return <span className="error">Error inProgress potato: {error}</span>;
   }
 
   return (

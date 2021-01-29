@@ -7,7 +7,12 @@ export function randomHex(): string {
   return ((Math.random() * 0xffffff) << 0).toString(16);
 }
 
-export const RequestState = enumeration(["ready", "loading", "done", "failed"]);
+export const RequestState = enumeration([
+  "ready",
+  "inProgress",
+  "done",
+  "failed",
+]);
 
 export const Request = model({
   state: optional(RequestState, "ready"),
@@ -18,8 +23,8 @@ export const Request = model({
     get ready() {
       return self.state === "ready";
     },
-    get loading() {
-      return self.state === "loading";
+    get inProgress() {
+      return self.state === "inProgress";
     },
     get success() {
       return self.state === "done";
@@ -42,7 +47,7 @@ export const Request = model({
         try {
           reset();
           const id = self.id;
-          self.state = "loading";
+          self.state = "inProgress";
           const value = yield* toGenerator(cb(...args));
           if (self.id !== id) {
             return new Cancel();

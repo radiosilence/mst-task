@@ -1,12 +1,12 @@
-# mst-request
+# mst-task
 
-A simple library for wrapping requests, using MobX-state-tree
+A simple library for wrapping async tasks, using MobX-state-tree
 
 ## Example
 
 ```ts
 import { flow, types } from "mobx-state-tree";
-import { isCancelled, isError, unwrap, Request } from "mst-request";
+import { isCancelled, isError, unwrap, taskFrom } from "mst-task";
 
 // This would be your API request
 export async function getPotato(id: string) {
@@ -20,19 +20,19 @@ export const Potato = types.model({
 
 export const PotatoStore = types
   .model("PotatoStore", {
-    request: createRequest(getPotato),
-    ///
     potato: types.maybe(Potato),
   })
+  .volatile(() => ({
+    requests: {
+      get: taskFrom(getPotato).create();
+    }
+  }))
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
-      const result = yield* self.request.execute(id);
+      const result = yield* self.requests.get.execute(id);
       if (isCancelled(result)) return; // make sure it is latest request (debouncing)
       if (isError(result)) throw new Error(result.error); // handle error
       self.potato = result.unwrap(); // we know it is success
-
-      console.log(result);
-      console.log(self.request.failed);
     });
 
     return {
@@ -48,7 +48,7 @@ export const PotatoDisplay = observer<{ id: string }>(({ id }) => {
   const { potatoStore } = useStores();
   const {
     potato,
-    request: { inProgress, error },
+    requests: { get: { inProgress, error } },
   } = potatoStore;
 
   useEffect(() => {

@@ -1,12 +1,12 @@
 import { toGenerator, types } from "mobx-state-tree";
-import { Request } from "./models";
+import { Task } from "./models";
 
-export function createRequest<T, Args extends unknown[]>(
+export function taskFrom<T, Args extends unknown[]>(
   cb: (...args: Args) => Promise<T>,
 ) {
   return types.optional(
-    Request.actions(self => ({
-      execute: (...args: Args) => toGenerator(self.request(cb)(...args)),
+    Task.actions(self => ({
+      execute: (...args: Args) => toGenerator(self.task(cb)(...args)),
     })),
     {},
   );

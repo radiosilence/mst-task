@@ -7,15 +7,10 @@ export function randomHex(): string {
   return ((Math.random() * 0xffffff) << 0).toString(16);
 }
 
-export const RequestState = enumeration([
-  "ready",
-  "inProgress",
-  "done",
-  "failed",
-]);
+export const TaskState = enumeration(["ready", "inProgress", "done", "failed"]);
 
-export const Request = model({
-  state: optional(RequestState, "ready"),
+export const Task = model({
+  state: optional(TaskState, "ready"),
   error: maybe(string),
   id: optional(string, randomHex()),
 })
@@ -40,7 +35,7 @@ export const Request = model({
       self.error = undefined;
     }
 
-    function request<R, Args extends unknown[]>(
+    function task<R, Args extends unknown[]>(
       cb: (...args: Args) => Promise<R>,
     ): (...args: Args) => Promise<Result<R>> {
       return flow(function* (...args: Args) {
@@ -63,9 +58,9 @@ export const Request = model({
     }
 
     return {
-      request,
+      task,
       reset,
     };
   });
 
-export type Request = Instance<typeof Request>;
+export type Task = Instance<typeof Task>;

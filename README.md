@@ -6,7 +6,7 @@ A simple library for wrapping async tasks, using MobX-state-tree
 
 ```ts
 import { flow, types } from "mobx-state-tree";
-import { isCancelled, isError, unwrap, taskFrom } from "mst-task";
+import { unwrap, taskFrom } from "mst-task";
 
 // This would be your API request
 export async function getPotato(id: string) {
@@ -30,8 +30,8 @@ export const PotatoStore = types
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
       const result = yield* self.requests.get.execute(id);
-      if (isCancelled(result)) return; // make sure it is latest request (debouncing)
-      if (isError(result)) throw new Error(result.error); // handle error
+      if (result.cancelled) return; // make sure it is latest request (debouncing)
+      if (result.failed) throw new Error(result.error); // handle error
       self.potato = result.unwrap(); // we know it is success
     });
 

@@ -33,7 +33,7 @@ export const PotatoStore = types
       const result = yield* self.requests.get.execute(id);
       if (result.cancelled) return; // make sure it is latest request (debouncing)
       if (result.failed) throw new Error(result.error); // handle error
-      self.potato = result.value; // we know it is success.
+      self.potato = result.value; // we know it is success due to type guarding
       // `result.value` will have correct type of `{ id: string, name: string }`
     });
 

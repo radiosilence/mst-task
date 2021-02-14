@@ -1,6 +1,6 @@
 # mst-task
 
-A simple library for wrapping async tasks, using MobX-state-tree
+A simple, strongly typed, library for wrapping async tasks, using MobX-state-tree
 
 ## Example
 
@@ -9,7 +9,7 @@ import { flow, types } from "mobx-state-tree";
 import { taskFrom } from "mst-task";
 
 // This would be your API request
-export async function getPotato(id: string) {
+export async function getPotato(id: string): Promise<{ id: string, name: string }> {
   return Promise.resolve({ id, name: "Jeremy" });
 }
 
@@ -29,10 +29,12 @@ export const PotatoStore = types
   }))
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
+      // execute will have the correct types for your original arguments of `getPotato`
       const result = yield* self.requests.get.execute(id);
       if (result.cancelled) return; // make sure it is latest request (debouncing)
       if (result.failed) throw new Error(result.error); // handle error
-      self.potato = result.value; // we know it is success
+      self.potato = result.value; // we know it is success.
+      // `result.value` will have correct type of `{ id: string, name: string }`
     });
 
     return {

@@ -35,6 +35,11 @@ export const PotatoStore = types
       if (result.failed) throw new Error(result.error); // handle error
       self.potato = result.value; // we know it is success due to type guarding
       // `result.value` will have correct type of `{ id: string, name: string }`
+
+      // Alternatively
+      if (result.ok) {
+        self.potato = result.value;
+      }
     });
 
     return {

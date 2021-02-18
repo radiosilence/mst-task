@@ -4,6 +4,8 @@ export enum ResultStatus {
   Ok,
 }
 
+export type TaskFn<T, Args extends unknown[]> = (...args: Args) => Promise<T>;
+
 export class Ok<R> {
   status: ResultStatus.Ok = ResultStatus.Ok;
   value: R;

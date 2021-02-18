@@ -1,8 +1,8 @@
 import { toGenerator, types } from "mobx-state-tree";
 import { Task } from "./models";
-import { TaskFn } from "./types";
+import { AsyncFn } from "./types";
 
-export function taskFrom<T, Args extends unknown[]>(cb: TaskFn<T, Args>) {
+export function taskFrom<T, Args extends unknown[]>(cb: AsyncFn<T, Args>) {
   return types.optional(
     Task.actions(self => ({
       execute: (...args: Args) =>

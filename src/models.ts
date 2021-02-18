@@ -1,5 +1,5 @@
 import { flow, Instance, toGenerator, types } from "mobx-state-tree";
-import { Cancel, Err, Ok, TaskFn } from "./types";
+import { AsyncFn, Cancel, Err, Ok } from "./types";
 
 const { model, optional, enumeration, string, maybe } = types;
 
@@ -35,9 +35,11 @@ export const Task = model({
       self.error = undefined;
     }
 
-    function task<Args extends unknown[], Value, F extends TaskFn<Value, Args>>(
-      cb: F,
-    ) {
+    function task<
+      Args extends unknown[],
+      Value,
+      F extends AsyncFn<Value, Args>
+    >(cb: F) {
       return flow(function* (...args: Args) {
         try {
           reset();

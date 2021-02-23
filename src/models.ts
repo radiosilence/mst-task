@@ -39,12 +39,12 @@ export const Task = model({
       Args extends unknown[],
       Value,
       F extends AsyncFn<Value, Args>
-    >(cb: F) {
+    >(cb: F, { silent } = { silent: false }) {
       return flow(function* (...args: Args) {
         try {
           reset();
           const id = self.id;
-          self.state = "inProgress";
+          if (!silent) self.state = "inProgress";
           const value = yield* toGenerator(cb(...args));
           if (self.id !== id) {
             return new Cancel();

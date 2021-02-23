@@ -7,6 +7,10 @@ export function taskFrom<T, Args extends unknown[]>(cb: AsyncFn<T, Args>) {
     Task.actions(self => ({
       execute: (...args: Args) =>
         toGenerator(self.task<Args, T, typeof cb>(cb)(...args)),
+      executeStealth: (...args: Args) =>
+        toGenerator(
+          self.task<Args, T, typeof cb>(cb, { silent: true })(...args),
+        ),
     })),
     {},
   );

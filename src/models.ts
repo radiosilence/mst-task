@@ -7,6 +7,10 @@ export function randomHex(): string {
   return ((Math.random() * 0xffffff) << 0).toString(16);
 }
 
+export interface Config {
+  silent?: boolean;
+}
+
 export const TaskState = enumeration(["ready", "inProgress", "done", "failed"]);
 
 export const Task = model({
@@ -39,8 +43,9 @@ export const Task = model({
       Args extends unknown[],
       Value,
       F extends AsyncFn<Value, Args>
-    >(cb: F, { silent } = { silent: false }) {
+    >(cb: F, config: Config = {}) {
       return flow(function* (...args: Args) {
+        const { silent = false } = config;
         try {
           reset();
           const id = self.id;

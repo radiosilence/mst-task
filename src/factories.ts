@@ -1,5 +1,5 @@
 import { toGenerator, types } from "mobx-state-tree";
-import { Task } from "./models";
+import { Config, Task } from "./models";
 import { AsyncFn } from "./types";
 
 export function taskFrom<T, Args extends unknown[]>(cb: AsyncFn<T, Args>) {
@@ -7,10 +7,8 @@ export function taskFrom<T, Args extends unknown[]>(cb: AsyncFn<T, Args>) {
     Task.actions(self => ({
       execute: (...args: Args) =>
         toGenerator(self.task<Args, T, typeof cb>(cb)(...args)),
-      executeStealth: (...args: Args) =>
-        toGenerator(
-          self.task<Args, T, typeof cb>(cb, { silent: true })(...args),
-        ),
+      executeCustom: (config: Config) => (...args: Args) =>
+        toGenerator(self.task<Args, T, typeof cb>(cb, config)(...args)),
     })),
     {},
   );

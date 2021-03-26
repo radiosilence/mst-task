@@ -1,6 +1,8 @@
 # mst-task
 
-A simple, strongly typed library for wrapping async tasks, using MobX-state-tree
+A simple, strongly typed library for wrapping async tasks, using MobX-state-tree.
+
+Why? Because I got bored of writing the same code to debounce, test whether things were loading, and wrapping stuff in `toGenerator` to get proper types back from the call.
 
 ## Example
 

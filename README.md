@@ -1,6 +1,6 @@
 # mst-task
 
-A simple, strongly typed, library for wrapping async tasks, using MobX-state-tree
+A simple, strongly typed library for wrapping async tasks, using MobX-state-tree
 
 ## Example
 
@@ -43,7 +43,7 @@ export const PotatoStore = types
     });
 
     return {
-      fetchPotatoByI$d,
+      fetchPotatoById,
     };
   });
 ```

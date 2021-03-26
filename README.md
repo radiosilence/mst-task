@@ -42,6 +42,9 @@ export const PotatoStore = types
       if (result.ok) {
         self.potato = result.value;
       }
+
+      // with some custom configuration
+      const result = yield* self.requests.get.executeCustom({ debounced = false, silent = true}, id);
     });
 
     return {

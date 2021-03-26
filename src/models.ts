@@ -9,6 +9,7 @@ export function randomHex(): string {
 
 export interface Config {
   silent?: boolean;
+  debounced?: boolean;
 }
 
 export const TaskState = enumeration(["ready", "inProgress", "done", "failed"]);
@@ -45,13 +46,13 @@ export const Task = model({
       F extends AsyncFn<Value, Args>
     >(cb: F, config: Config = {}) {
       return flow(function* (...args: Args) {
-        const { silent = false } = config;
+        const { silent = false, debounced = true } = config;
         try {
           reset();
           const id = self.id;
           if (!silent) self.state = "inProgress";
           const value = yield* toGenerator(cb(...args));
-          if (self.id !== id) {
+          if (debounced && self.id !== id) {
             return new Cancel();
           }
           self.state = "done";

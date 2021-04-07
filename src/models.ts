@@ -17,7 +17,7 @@ export const TaskState = enumeration(["ready", "inProgress", "done", "failed"]);
 export const Task = model({
   state: optional(TaskState, "ready"),
   error: maybe(string),
-  id: optional(string, randomHex()),
+  executionId: optional(string, randomHex()),
 })
   .views(self => ({
     get ready() {
@@ -36,7 +36,7 @@ export const Task = model({
   .actions(self => {
     function reset() {
       self.state = "ready";
-      self.id = randomHex();
+      self.executionId = randomHex();
       self.error = undefined;
     }
 
@@ -49,10 +49,10 @@ export const Task = model({
         const { silent = false, debounced = true } = config;
         try {
           reset();
-          const id = self.id;
+          const executionId = self.executionId;
           if (!silent) self.state = "inProgress";
           const value = yield* toGenerator(cb(...args));
-          if (debounced && self.id !== id) {
+          if (debounced && self.executionId !== executionId) {
             return new Cancel();
           }
           self.state = "done";

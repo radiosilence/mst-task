@@ -1,6 +1,6 @@
 {
   "name": "mst-task",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Async task wrapper for mobx-state-tree",
   "main": "dist/index.js",
   "repository": "git@github.com:radiosilence/mst-task.git",

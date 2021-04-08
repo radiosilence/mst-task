@@ -32,19 +32,13 @@ export const PotatoStore = types
   .actions(self => {
     const fetchPotatoById = flow(function* (id: string) {
       // execute will have the correct types for your original arguments of `getPotato`
-      const result = yield* self.requests.get.execute(id);
-      if (result.cancelled) return; // make sure it is latest request (debouncing)
-      if (result.failed) throw new Error(result.error); // handle error
-      self.potato = result.value; // we know it is success due to type guarding
-      // `result.value` will have correct type of `{ id: string, name: string }`
-
-      // Alternatively
-      if (result.ok) {
-        self.potato = result.value;
+      try {
+        const [potato, stale] = yield* self.requests.get.execute(id);
+        if (stale) return; // make sure it is latest request (debouncing) - this can be omitted if not debouncing
+        self.potato = potato;
+      } catch (error) {
+        console.error(error);
       }
-
-      // with some custom configuration
-      const result = yield* self.requests.get.executeCustom({ debounced = false, silent = true}, id);
     });
 
     return {

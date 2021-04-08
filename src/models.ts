@@ -1,24 +1,21 @@
 import { flow, Instance, toGenerator, types } from "mobx-state-tree";
-import { AsyncFn, Cancel, Err, Ok } from "./types";
+import { AsyncFn, Result } from "./types";
 
-const { model, optional, enumeration, string, maybe } = types;
+const { enumeration, model, optional, frozen } = types;
 
 export function randomHex(): string {
   return ((Math.random() * 0xffffff) << 0).toString(16);
-}
-
-export interface Config {
-  silent?: boolean;
-  debounced?: boolean;
 }
 
 export const TaskState = enumeration(["ready", "inProgress", "done", "failed"]);
 
 export const Task = model({
   state: optional(TaskState, "ready"),
-  error: maybe(string),
-  executionId: optional(string, randomHex()),
+  error: frozen(),
 })
+  .volatile(self => ({
+    executionId: randomHex(),
+  }))
   .views(self => ({
     get ready() {
       return self.state === "ready";
@@ -37,30 +34,28 @@ export const Task = model({
     function reset() {
       self.state = "ready";
       self.executionId = randomHex();
-      self.error = undefined;
     }
 
     function task<
       Args extends unknown[],
       Value,
       F extends AsyncFn<Value, Args>
-    >(cb: F, config: Config = {}) {
+    >(cb: F) {
       return flow(function* (...args: Args) {
-        const { silent = false, debounced = true } = config;
         try {
           reset();
           const executionId = self.executionId;
-          if (!silent) self.state = "inProgress";
+          self.state = "inProgress";
           const value = yield* toGenerator(cb(...args));
-          if (debounced && self.executionId !== executionId) {
-            return new Cancel();
+          if (self.executionId !== executionId) {
+            return [value, true] as Result<Value>;
           }
           self.state = "done";
-          return new Ok(value);
+          return [value, false] as Result<Value>;
         } catch (error) {
-          self.error = `${error}`;
           self.state = "failed";
-          return new Err(error);
+          self.error = error;
+          throw error;
         }
       });
     }

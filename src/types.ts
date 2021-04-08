@@ -1,45 +1,19 @@
 export enum ResultStatus {
-  Err,
-  Cancel,
   Ok,
 }
 
 export type AsyncFn<T, Args extends unknown[]> = (...args: Args) => Promise<T>;
 
-export class Ok<R> {
-  status: ResultStatus.Ok = ResultStatus.Ok;
-  value: R;
+export type Result<R> = [value: R, stale: boolean];
 
-  constructor(value: R) {
-    this.value = value;
-  }
+// export class Result<R> {
+//   value: R;
+//   stale: boolean;
 
-  ok: true = true;
-  cancelled: false = false;
-  failed: false = false;
-}
+//   constructor(value: R, stale: boolean) {
+//     this.value = value;
+//     this.stale = stale;
+//   }
 
-export class Err<T = Error | string> {
-  status: ResultStatus.Err = ResultStatus.Err;
-  error: T;
-
-  constructor(err: T) {
-    this.error = err;
-  }
-
-  ok: false = false;
-  cancelled: false = false;
-  failed: true = true;
-}
-
-export class Cancel {
-  status: ResultStatus.Cancel = ResultStatus.Cancel;
-
-  ok: false = false;
-  cancelled: true = true;
-  failed: false = false;
-}
-
-export type Result<T> = Ok<T> | Err | Cancel;
-
-export type FlowReturn<R> = R extends Promise<infer T> ? T : R;
+//   ok: true = true;
+// }

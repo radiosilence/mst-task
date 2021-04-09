@@ -61,11 +61,8 @@ export function taskFrom<Value, Args extends unknown[]>(
           const executionId = self.executionId;
           self.state = TaskState.InProgress;
           const value = yield* toGenerator(cb(...args));
-          if (self.executionId !== executionId) {
-            return [value, true] as Result<Value>;
-          }
           self.state = TaskState.Done;
-          return [value, false] as Result<Value>;
+          return [value, self.executionId !== executionId] as Result<Value>;
         } catch (error) {
           self.state = TaskState.Failed;
           self.error = error;

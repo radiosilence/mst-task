@@ -39,16 +39,12 @@ const Task = model("Task")
       return self.state === TaskState.Failed;
     },
   }))
-  .actions(self => {
-    function reset() {
+  .actions(self => ({
+    reset() {
       self.state = TaskState.Ready;
       self.executionId = randomHex();
-    }
-
-    return {
-      reset,
-    };
-  });
+    },
+  }));
 
 export function taskFrom<Value, Args extends unknown[]>(
   cb: AsyncFn<Value, Args>,

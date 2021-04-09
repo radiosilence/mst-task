@@ -46,9 +46,9 @@ const Task = model("Task")
     },
   }));
 
-export function taskFrom<Value, Args extends unknown[]>(
+export const taskFrom<Value, Args extends unknown[]>(
   cb: AsyncFn<Value, Args>,
-) {
+)=> {
   return Task.actions(self => ({
     execute: toGeneratorFunction(
       flow(function* (...args: Args) {
@@ -57,8 +57,11 @@ export function taskFrom<Value, Args extends unknown[]>(
           const executionId = self.executionId;
           self.state = TaskState.InProgress;
           const value = yield* toGenerator(cb(...args));
+          if (self.executionId !== executionId) {
+            return [value, true] as Result<Value>;
+          }
           self.state = TaskState.Done;
-          return [value, self.executionId !== executionId] as Result<Value>;
+          return [value, false] as Result<Value>;
         } catch (error) {
           self.state = TaskState.Failed;
           self.error = error;

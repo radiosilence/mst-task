@@ -46,9 +46,9 @@ const Task = model("Task")
     },
   }));
 
-export const taskFrom<Value, Args extends unknown[]>(
+export function taskFrom<Value, Args extends unknown[]>(
   cb: AsyncFn<Value, Args>,
-)=> {
+) {
   return Task.actions(self => ({
     execute: toGeneratorFunction(
       flow(function* (...args: Args) {

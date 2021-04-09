@@ -4,17 +4,22 @@ export type AsyncFn<T, Args extends unknown[]> = (...args: Args) => Promise<T>;
 
 export type Result<R> = [value: R, stale: boolean];
 
-const { enumeration, model, optional, frozen } = types;
+const { model, optional, frozen, number } = types;
 
 export function randomHex(): string {
   return ((Math.random() * 0xffffff) << 0).toString(16);
 }
 
-export const TaskState = enumeration(["ready", "inProgress", "done", "failed"]);
+enum TaskState {
+  Ready,
+  InProgress,
+  Done,
+  Failed,
+}
 
 const Task = model("Task")
   .props({
-    state: optional(TaskState, "ready"),
+    state: optional(number, TaskState.Ready),
     error: frozen(),
   })
   .volatile(() => ({
@@ -22,21 +27,21 @@ const Task = model("Task")
   }))
   .views(self => ({
     get ready() {
-      return self.state === "ready";
+      return self.state === TaskState.Ready;
     },
     get inProgress() {
-      return self.state === "inProgress";
+      return self.state === TaskState.InProgress;
     },
     get success() {
-      return self.state === "done";
+      return self.state === TaskState.Done;
     },
     get failed() {
-      return self.state === "failed";
+      return self.state === TaskState.Failed;
     },
   }))
   .actions(self => {
     function reset() {
-      self.state = "ready";
+      self.state = TaskState.Ready;
       self.executionId = randomHex();
     }
 
@@ -54,15 +59,15 @@ export function taskFrom<Value, Args extends unknown[]>(
         try {
           self.reset();
           const executionId = self.executionId;
-          self.state = "inProgress";
+          self.state = TaskState.InProgress;
           const value = yield* toGenerator(cb(...args));
           if (self.executionId !== executionId) {
             return [value, true] as Result<Value>;
           }
-          self.state = "done";
+          self.state = TaskState.Done;
           return [value, false] as Result<Value>;
         } catch (error) {
-          self.state = "failed";
+          self.state = TaskState.Failed;
           self.error = error;
           throw error;
         }

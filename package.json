@@ -1,22 +1,20 @@
 {
   "name": "mst-task",
-  "version": "2.0.1",
+  "version": "2.4.1",
   "description": "Async task wrapper for mobx-state-tree",
   "main": "dist/index.js",
   "repository": "git@github.com:radiosilence/mst-task.git",
   "author": "James Cleveland <jc@blit.cc>",
-  "license": "MIIT",
+  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
-    "mobx-state-tree": "^5.0.1"
+    "mobx-state-tree": "^6.0.0"
   },
   "devDependencies": {
-    "@arkweid/lefthook": "0.7.2",
-    "prettier": "2.2.1",
-    "typescript": "^4.1.5"
+    "typescript": "^5.4.5"
   }
 }

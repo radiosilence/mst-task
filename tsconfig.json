@@ -1,21 +1,25 @@
 {
+  "extends": "@tsconfig/bun/tsconfig.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "outDir": "dist",
     "noEmit": false,
+    "emitDeclarationOnly": true,
     "incremental": false,
     "noUnusedLocals": true,
+    "allowImportingTsExtensions": true,
     "declaration": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "isolatedModules": true,
-    "target": "es2019",
-    "rootDir": "src"
+    "rootDir": "src",
+    "verbatimModuleSyntax": false
   },
   "exclude": ["node_modules"],
-  "include": ["src", "index.ts"]
+  "include": ["src"]
 }

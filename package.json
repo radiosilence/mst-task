@@ -1,6 +1,6 @@
 {
   "name": "mst-task",
-  "version": "2.4.1",
+  "version": "3.0.0",
   "description": "Async task wrapper for mobx-state-tree",
   "main": "dist/index.min.mjs",
   "types": "dist/index.d.mts",
@@ -8,7 +8,7 @@
   "author": "James Cleveland <jc@blit.cc>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc && esbuild src/index.mts --bundle --format=esm --outfile=dist/index.min.mjs",
+    "build": "tsc && node esbuild.config.mjs",
     "watch": "tsc -w",
     "prepublishOnly": "bun run build"
   },
